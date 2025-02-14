@@ -3,7 +3,6 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image as RosImage
 from cv_bridge import CvBridge
 import cv2
-import os
 
 class ImagePublisher(Node):
     def __init__(self, video_path):
@@ -31,9 +30,14 @@ def main():
     rclpy.init()
     video_path = "IMG_0565.MOV"
     image_publisher = ImagePublisher(video_path)
-    rclpy.spin(image_publisher)
+    
+    executor = rclpy.executors.SingleThreadedExecutor()
+    executor.add_node(image_publisher)
+    executor.spin()
+    
     image_publisher.destroy_node()
     rclpy.shutdown()
+    cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     main()
